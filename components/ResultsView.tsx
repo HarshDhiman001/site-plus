@@ -4,7 +4,7 @@ import { AuditData, CategoryResult, Issue, Severity } from '../types';
 import { OverallScoreChart, CategoryBarChart } from './AuditCharts';
 import { SpeedVisualizer } from './SpeedVisualizer';
 import { IconAlertCircle, IconCheckCircle, IconChevronDown, IconChevronUp, IconZap, IconGlobe, IconAccessibility, IconActivity, IconGauge, IconTwitter, IconLinkedIn, IconFacebook, IconHistory, IconTrophy, IconTarget, IconArrowRight, IconStar, IconShield, IconUsers, IconLock, IconSmartphone, IconHeart, IconGoogle, IconMapPin, IconCheck, IconTrendingUp, IconQuote } from './Icons';
-import { logAnalyticsEvent } from '../services/firebase';
+import { logAnalyticsEvent, getUrlHitCount } from '../services/firebase';
 
 interface ResultsViewProps {
    data: AuditData;
@@ -47,6 +47,16 @@ const IssueRow: React.FC<{ issue: Issue; isLast: boolean }> = ({ issue, isLast }
 export const ResultsView: React.FC<ResultsViewProps> = ({ data, onReset, user }) => {
    const [activeTab, setActiveTab] = useState<string>(data.categories?.[0]?.name || '');
    const [previousAudit, setPreviousAudit] = useState<AuditData | null>(null);
+   const [globalHitCount, setGlobalHitCount] = useState<number | null>(null);
+
+   // Fetch Global Hit Count
+   useEffect(() => {
+      const fetchGlobalCount = async () => {
+         const count = await getUrlHitCount(data.urlOrTitle);
+         setGlobalHitCount(count);
+      };
+      fetchGlobalCount();
+   }, [data.urlOrTitle]);
 
    // History / Comparison Logic
    useEffect(() => {
@@ -150,6 +160,11 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ data, onReset, user })
                   <span className="flex-shrink-0 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full uppercase tracking-wide border border-green-200 flex items-center gap-1">
                      <IconCheckCircle className="w-3 h-3" /> Live Scan
                   </span>
+                  {globalHitCount !== null && (
+                     <span className="flex-shrink-0 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full uppercase tracking-wide border border-blue-200 flex items-center gap-1">
+                        <IconActivity className="w-3 h-3" /> {globalHitCount} Total Audits
+                     </span>
+                  )}
                </div>
 
                <div className="mb-3">

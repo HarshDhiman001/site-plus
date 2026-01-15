@@ -10,7 +10,7 @@ import { ClinicLandingView } from './components/ClinicLandingView';
 import { Dashboard } from './components/Dashboard';
 import { IconSearch, IconCode, IconActivity, IconAlertCircle, IconZap, IconAccessibility, IconGlobe, IconTrendingUp, IconCheckCircle, IconMapPin, IconUsers, IconShield, IconStar, IconUser, IconLogOut } from './components/Icons';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, signInWithGoogle, logout, saveAuditResult, getUserAudits, logAnalyticsEvent } from './services/firebase';
+import { auth, signInWithGoogle, logout, saveAuditResult, getUserAudits, logAnalyticsEvent, trackGlobalAudit } from './services/firebase';
 
 interface User {
   uid: string;
@@ -207,6 +207,7 @@ function App() {
     setError(null);
     setLoadingText(LOADING_MESSAGES[0]);
     logAnalyticsEvent('audit_start', { type: analysisType, region: region });
+    trackGlobalAudit(inputValue, analysisType);
 
     try {
       // Pass the selected region to the service

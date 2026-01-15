@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { getAnalytics, logEvent } from "firebase/analytics";
-import { getFirestore, doc, setDoc, serverTimestamp, collection, query, where, getDocs, addDoc, orderBy, limit } from "firebase/firestore";
+import { getFirestore, doc, setDoc, serverTimestamp, collection, query, where, getDocs, addDoc, orderBy, limit, increment } from "firebase/firestore";
 import { AuditData } from "../types";
 
 const firebaseConfig = {
@@ -68,6 +68,48 @@ export const getUserAudits = async (userId: string): Promise<AuditData[]> => {
         console.error("Error getting user audits:", error);
         return [];
     }
+};
+
+export const trackGlobalAudit = async (url: string, type: string) => {
+    try {
+        // 1. Log the individual hit in a chronological collection
+        const logRef = collection(db, "global_audits_log");
+        await addDoc(logRef, {
+            url,
+            type,
+            timestamp: serverTimestamp(),
+            userAgent: navigator.userAgent
+        });
+
+        // 2. Increment the total counter for this specific URL
+        // We sanitize the URL to use as a document ID (Firebase IDs can't have /)
+        const sanitizedUrl = url.replace(/[^a-zA-Z0-0]/g, '_').toLowerCase();
+        const siteRef = doc(db, "site_stats", sanitizedUrl);
+        await setDoc(siteRef, {
+            url: url,
+            hitCount: increment(1),
+            lastAuditedAt: serverTimestamp()
+        }, { merge: true });
+    } catch (error) {
+        console.error("Error tracking global audit:", error);
+    }
+};
+
+export const getUrlHitCount = async (url: string): Promise<number> => {
+    try {
+        const sanitizedUrl = url.replace(/[^a-zA-Z0-0]/g, '_').toLowerCase();
+        const siteRef = doc(db, "site_stats", sanitizedUrl);
+        const docSnap = await getDocs(query(collection(db, "site_stats"), where("url", "==", url)));
+
+        // Simpler approach for single doc fetch
+        const snapshot = await getDocs(query(collection(db, "site_stats"), where("url", "==", url)));
+        if (!snapshot.empty) {
+            return snapshot.docs[0].data().hitCount || 0;
+        }
+    } catch (error) {
+        console.error("Error getting URL hit count:", error);
+    }
+    return 0;
 };
 
 export const signInWithGoogle = async () => {
