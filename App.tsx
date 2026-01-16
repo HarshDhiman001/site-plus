@@ -39,7 +39,7 @@ const LOADING_MESSAGES = [
   "Fetching regional competitors...",
   "Running deep-dive SEO diagnostics...",
   "Analyzing UX friction points...",
-  "Compiling Grok-style intelligence...",
+  "Compiling executive intelligence...",
   "Finalizing report..."
 ];
 

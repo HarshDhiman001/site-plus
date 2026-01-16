@@ -20,7 +20,7 @@ const getSchema = () => {
       researchBrief: {
         type: Type.OBJECT,
         properties: {
-          title: { type: Type.STRING, description: "A witty, Grok-style header (e.g., 'Intelligence Brief', 'Recon Report')." },
+          title: { type: Type.STRING, description: "A punchy, intelligence-style header (e.g., 'Intelligence Brief', 'Recon Report')." },
           bullets: {
             type: Type.ARRAY,
             items: { type: Type.STRING },
@@ -137,7 +137,7 @@ export const analyzeWebsite = async (content: string, type: 'URL' | 'CODE', regi
     2. Adjust SEO Keyword estimation for ${region} Google Search results.
     3. Adjust Competitor analysis for local ${region} businesses if applicable.
     4. CRITICAL: Mimic the extraction of the real page title, meta description, and a snippet of content to prove to the user you actually analyzed the site.
-    5. STYLE: Provide a 'Grok-style' research brief. Be direct, factual, slightly witty, and use bullet points to convey complex insights quickly.
+    5. STYLE: Provide a direct and factual research brief. Be punchy and use bullet points to convey complex insights quickly.
     6. PERFORMANCE: Estimate 6 Core Web Vital metrics (LCP, CLS, INP, FCP, TTFB, Speed Index).
 
     Return a JSON object following this schema:
@@ -159,7 +159,7 @@ export const analyzeWebsite = async (content: string, type: 'URL' | 'CODE', regi
     
     Target Region: ${region}.
     
-    Return a JSON object with a website audit including a 'Grok-style' research brief and Performance metrics. Follow the standard audit JSON schema.`;
+    Return a JSON object with a website audit including a research brief and Performance metrics. Follow the standard audit JSON schema.`;
   }
 
   if (openRouterKey && openRouterKey !== 'PLACEHOLDER') {

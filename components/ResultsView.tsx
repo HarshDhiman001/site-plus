@@ -221,7 +221,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ data, onReset, user })
             </div>
          </div>
 
-         {/* Grok-style Research Brief */}
+         {/* AI Research Brief */}
          {data.researchBrief && (
             <div className="mb-8 bg-[#0f172a] rounded-2xl p-6 border border-slate-800 shadow-lg text-slate-300 relative overflow-hidden group">
                <div className="absolute top-0 right-0 p-4 opacity-10">
