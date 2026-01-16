@@ -203,6 +203,12 @@ function App() {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
+    // Force Login to continue
+    if (!user) {
+      setIsLoginOpen(true);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setLoadingText(LOADING_MESSAGES[0]);
